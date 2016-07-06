@@ -9,6 +9,7 @@
 
 ## Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [Background](#background)
   - [Modules that implement the interface](#modules-that-implement-the-interface)
   - [Badge](#badge)
@@ -17,22 +18,6 @@
   - [Node.js](#nodejs)
   - [Go](#go)
 - [API](#api)
-  - [Files](/API/files)
-    - [`add`](/API/files#add)
-    - [`createAddStream`](/files#createaddstream)
-    - [`cat`](/API/files#cat)
-  - [Object](/API/object)
-    - [`object.new`](/API/object#objectnew)
-    - [`object.put`](/API/object#objectput)
-    - [`object.get`](/API/object#objectget)
-    - [`object.data`](/API/object#objectdata)
-    - [`object.links`](/API/object#objectlinks)
-    - [`object.stat`](/API/object#objectstat)
-    - [`object.patch`](/API/object#objectpatch)
-      - [`object.patch.addLink`](/API/object#objectpatchaddlink)
-      - [`object.patch.rmLink`](/API/object#objectpatchrmlink)
-      - [`object.patch.appendData`](/API/object#objectpatchappenddata)
-      - [`object.patch.setData`](/API/object#objectpatchsetdata)
 - [Contribute](#contribute)
   - [Want to hack on IPFS?](#want-to-hack-on-ipfs)
 - [License](#license)
@@ -75,22 +60,42 @@ In Go land:
 
 ### Node.js
 
-Install `interface-ipfs-core` as one of the dependencies of your project and as a test file. Then, using `mocha` (for Node.js) or a test runner with compatible API, do:
+Install `interface-ipfs-core` as one of the dependencies of your project. Install the following test file:
 
-```
-var test = require('interface-ipfs-core')
+```js
+/* eslint-env mocha */
+'use strict'
 
-var common = {
+const test = require('interface-ipfs-core')
+const IPFS = require('ipfs') // This should be your own instance, not the package ipfs.
+
+const common = {
   setup: function (cb) {
-    cb(null, yourIPFSInstance)
+    const ipfs = new IPFS()
+    ipfs.load(() => {
+      cb(null, ipfs)
+    })
   },
   teardown: function (cb) {
     cb()
   }
 }
 
-// use all of the test suits
-test.all(common)
+test.files(common)
+```
+
+Then, using `mocha` (for Node.js) or a test runner with compatible API, do:
+
+```sh
+mocha test.js
+```
+
+To test this yourself, you can clone this repo and run a test on [test.js](examples/test.js):
+
+```sh
+npm install
+npm install -g mocha ipfs
+mocha test.js
 ```
 
 ### Go
